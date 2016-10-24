@@ -151,3 +151,98 @@ ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity)) +
   geom_bar(alpha = 1/5, position = "identity") # change alpha bc position = identity overlaps them
 ggplot(data = diamonds, mapping = aes(x = cut, colour = clarity)) + 
   geom_bar(fill = NA, position = "identity")
+
+# position = fill allows you to compare proportions across groups; makes all bars the same height
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity), position = "fill")
+
+# position = dodge puts them side by side
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity), position = "dodge")
+
+# position = jitter slightly displaces overlapping points
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), position = "jitter")
+
+# alternatively 
+ggplot (data = mpg) + geom_jitter(mapping = aes(x = displ, y = hwy))
+ggplot(data = mpg) + geom_count(aes(x = displ, y = hwy)) # makes points bigger if there are more
+
+# 3.9 coordinate systems
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot()
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot() +
+  coord_flip() # flips x and y
+
+nz <- map_data("nz")
+
+ggplot(nz, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "black")
+
+ggplot(nz, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "black") +
+  coord_quickmap() # sets ratio for maps
+
+bar <- ggplot(data = diamonds) + 
+  geom_bar(
+    mapping = aes(x = cut, fill = cut), 
+    show.legend = FALSE,
+    width = 1
+  ) + 
+  theme(aspect.ratio = 1) +
+  labs(x = NULL, y = NULL)
+
+bar + coord_flip()
+bar + coord_polar() # polar coordinates/petals/pie charts
+
+# R keyboard shortcuts!
+#alt minus for arrow
+seq()
+
+
+# Chapter 5, Data transformation
+library(nycflights13)
+
+# filter
+jan1 <- filter (flights, month ==1, day ==1)
+
+(dec25 <- filter(flights, month == 12, day == 25))  # parentheses print as well as name
+
+# Ch 5 exercises
+# flights with arrival delay of 2 or more hours
+arr_del_2 <- filter (flights, arr_delay >= 120)
+
+# flew to houston
+dest_Hou <- filter (flights, dest == "HOU" | dest == "IAH")
+
+# operated by United, Am, or Delta
+UAD_op <- filter (flights, carrier %in% c("UA", "AA", "DL"))
+
+# departed in summer
+summ_dep <- filter (flights, month %in% c(7, 8, 9))
+
+# arrived morme than two hours late, but didn't leave late
+late_arr <- filter (flights, arr_delay > 120 & dep_delay <= 0)
+
+# delayed by hour, made up 30 min
+fast <- filter (flights, dep_delay >= 60 & sched_arr_time - arr_time <= dep_delay - 30 )
+
+# departed between midnight and 6am
+night <- filter (flights, dep_time > 0 & dep_time < 360)
+
+# between
+night <- filter (flights, between(dep_time, 0, 360))
+
+length(which (is.na(flights$dep_time)))
+
+# arrange
+arrange(flights, is.na(year))
+
+# rename
+rename(flights, tail_num = tailnum)
+
+# use everything() to rearrange columns
+select(flights, time_hour, air_time, everything()) # moves ttiem_hour, air_time to front
+
+# use mutate to add columns, transmute to create a new data frame just with new columns

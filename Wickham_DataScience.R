@@ -132,3 +132,22 @@ ggplot(data = diamonds) +
 # 1. default geom with stat_summary is "pointrange" but maybe it's geom_histogram/geom_freqpoly?
 ggplot (data = diamonds) + geom_pointrange( aes (x = cut, y = depth, ymin = min, ymax = max), stat = "identity") # ???
 
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1)) # need to set group = 1 inside aes but not sure why
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = color, y = ..prop..))
+
+# 3.8 Position adjustments 
+
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, colour = cut))
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = cut)) # use fill with bar charts; colorr just does outline
+
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity)) # using fill with another variable gives you stacked bar charts. Position controls the stacking; can adjust with position = 
+
+ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity)) + 
+  geom_bar(alpha = 1/5, position = "identity") # change alpha bc position = identity overlaps them
+ggplot(data = diamonds, mapping = aes(x = cut, colour = clarity)) + 
+  geom_bar(fill = NA, position = "identity")
